@@ -5,11 +5,11 @@ many times that line appeared in the input and the contents of those
 lines.  For example, the following command:
 
 ```
-occurs <<eof
-a
-a
+./occurs <<eof
+a!
+a!
 b
-c
+c!
 b
 eof
 ```
@@ -17,9 +17,9 @@ eof
 Should output this:
 
 ```
-2 a
+2 a!
 2 b
-1 c
+1 c!
 ```
 
 The order is not important.  So any permutation of these lines is
@@ -30,7 +30,7 @@ How does your solution perform for large inputs.  How does it handle
 100M rows for instance?
 
 ```
-time yes | head -n 100000000
+time yes | head -n 100000000 | occurs
 ```
 
 Is it slow?  You can compare it to this program: `sort | uniq
@@ -38,32 +38,13 @@ Is it slow?  You can compare it to this program: `sort | uniq
 
 # Question 3
 Modify your program to group lines based on their "signature".  A
-signature of string is all the non white space characters in that
-line.  The output should contain an arbitrary element from that
-group.  In the example from before all lines would be added to the same
-group:
+signature of a string are all the non alpha-numeric characters in that
+string.  The output should contain an arbitrary element from that
+group.  In the example from before the output could be e.g.:
 
 ```
-5 a
-```
-
-It would also be allowed to output `5 b` or `5 c`.  Here's another example:
-
-```
-occurs <<eof
-a.
- a
-a
-b.
-eof
-```
-
-Should give as output:
-
-```
-1 a
-1  a
-2 a.
+2 b
+3 a!
 ```
 
 # Question 4
