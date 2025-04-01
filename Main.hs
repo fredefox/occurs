@@ -1,4 +1,5 @@
-{-# language GHC2024 #-}
+{-# language GHC2024, Strict #-}
+{-# options_ghc -Wall #-}
 module Main where
 
 import qualified Data.Map.Strict as Map
@@ -11,7 +12,13 @@ import System.Environment (getArgs)
 
 newtype Occurs a = Occurs (Sum Int, Last a)
 
-deriving newtype instance Semigroup (Occurs a)
+-- I broke the nice performance characteristic of my program when I
+-- rewrote it to use this inherited newtype instance.  It's not
+-- sufficiently strict.  Which sucks because it prevents us from
+-- simply using this instance:
+-- deriving newtype instance Semigroup (Occurs a)
+instance Semigroup (Occurs a) where
+  Occurs (Sum !n, _) <> Occurs (Sum !m, !a) = Occurs (Sum (n + m), a)
 
 main :: IO ()
 main = do
