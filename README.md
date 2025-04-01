@@ -67,4 +67,6 @@ Should give as output:
 ```
 
 # Question 4
-More time? https://projecteuler.net/problem=14
+Modify your program to run with the previous behaviour, except if it
+receives an argument `--signature` in which case it exhibits the
+latter behaviour.

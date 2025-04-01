@@ -7,13 +7,21 @@ import Data.Text as Text
 import Data.Text.IO as Text
 import Data.Char
 import Data.Semigroup
+import System.Environment (getArgs)
 
 newtype Occurs a = Occurs (Sum Int, Last a)
 
 deriving newtype instance Semigroup (Occurs a)
 
 main :: IO ()
-main = Text.getContents >>= traverse_ p . occurs sgntr . Text.lines
+main = do
+  p <- getArgs >>= \case
+    ("--signature":_) -> pure sgntr
+    _ -> pure id
+  mainWith p
+
+mainWith :: (Text -> Text) -> IO ()
+mainWith q = Text.getContents >>= traverse_ p . occurs q . Text.lines
   where
   p :: (Text, Occurs Text) -> IO ()
   p (_, Occurs (Sum n, Last s)) = Text.putStrLn $ Text.unwords [Text.show n, s]
