@@ -34,13 +34,37 @@ time yes | head -n 100000000
 ```
 
 Is it slow?  You can compare it to this program: `sort | uniq
---count`.  If your solution is slow, can it be improved.
+--count`.  If it's slow: Why? Can it be improved?
 
 # Question 3
 Modify your program to group lines based on their "signature".  A
 signature of string is all the non white space characters in that
-line.
+line.  The output should contain an arbitrary element from that
+group.  In the example from before all lines would be added to the same
+group:
 
+```
+5 a
+```
+
+It would also be allowed to output `5 b` or `5 c`.  Here's another example:
+
+```
+occurs <<eof
+a.
+ a
+a
+b.
+eof
+```
+
+Should give as output:
+
+```
+1 a
+1  a
+2 a.
+```
 
 # Question 4
 More time? https://projecteuler.net/problem=14

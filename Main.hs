@@ -1,15 +1,25 @@
+{-# language GHC2024 #-}
 module Main where
 
 import qualified Data.Map.Strict as Map
 import Data.Foldable (traverse_)
 import Data.Text as Text
 import Data.Text.IO as Text
+import Data.Char
+import Data.Semigroup
+
+newtype Occurs a = Occurs (Sum Int, Last a)
+
+deriving newtype instance Semigroup (Occurs a)
 
 main :: IO ()
-main = Text.getContents >>= traverse_ p . occurs . Text.lines
+main = Text.getContents >>= traverse_ p . occurs sgntr . Text.lines
   where
-  p :: (Text, Int) -> IO ()
-  p (s, n) = Text.putStrLn $ Text.unwords [Text.show n, s]
+  p :: (Text, Occurs Text) -> IO ()
+  p (_, Occurs (Sum n, Last s)) = Text.putStrLn $ Text.unwords [Text.show n, s]
 
-occurs :: Ord a => [] a -> [] (a, Int)
-occurs = Map.toList . Map.fromListWith (+) . fmap (\x -> (x, 1))
+occurs :: Semigroup a => Ord b => Monoid b => (a -> b) -> [] a -> [] (b, Occurs a)
+occurs p = Map.toList . Map.fromListWith (<>) . fmap (\x -> (p x, (Occurs (Sum 1, Last x))))
+
+sgntr :: Text -> Text
+sgntr = Text.filter (not . isAlphaNum)
